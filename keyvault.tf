@@ -2,6 +2,9 @@ resource "random_id" "keyvault" {
   byte_length = 2
 }
 
+data "azurerm_client_config" "current" {
+}
+
 resource "azurerm_key_vault" "vault" {
   name                        = "${var.environment}-vault-${random_id.keyvault.hex}"
   location                    = "${azurerm_resource_group.vault.location}"
