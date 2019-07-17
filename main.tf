@@ -12,16 +12,16 @@ resource "azurerm_key_vault" "vault" {
   resource_group_name         = "${azurerm_resource_group.vault.name}"
   enabled_for_deployment      = true
   enabled_for_disk_encryption = true
-  tenant_id                   = "${var.tenant_id}"
+  tenant_id                   = var.tenant_id
 
   sku_name = "standard"
 
   tags = {
-    environment = "${var.environment}"
+    environment = var.environment
   }
 
   access_policy {
-    tenant_id = "${var.tenant_id}"
+    tenant_id = var.tenant_id
 
     #object_id = "${var.object_id}"
     object_id = "${data.azurerm_client_config.current.service_principal_object_id}"
@@ -44,7 +44,7 @@ resource "azurerm_key_vault" "vault" {
 }
 
 resource "azurerm_key_vault_key" "generated" {
-  name         = "${var.key_name}"
+  name         = var.key_name
   key_vault_id = "${azurerm_key_vault.vault.id}"
   key_type     = "RSA"
   key_size     = 2048
@@ -69,7 +69,7 @@ output "key_vault_name" {
 resource "azurerm_virtual_network" "tf_network" {
   name                = "network-${random_id.keyvault.hex}"
   address_space       = ["10.0.0.0/16"]
-  location            = "${var.location}"
+  location            = var.location
   resource_group_name = "${azurerm_resource_group.vault.name}"
 
   tags = {
@@ -86,7 +86,7 @@ resource "azurerm_subnet" "tf_subnet" {
 
 resource "azurerm_public_ip" "tf_publicip" {
   name                = "ip-${random_id.keyvault.hex}"
-  location            = "${var.location}"
+  location            = var.location
   resource_group_name = "${azurerm_resource_group.vault.name}"
   allocation_method   = "Dynamic"
 
@@ -97,7 +97,7 @@ resource "azurerm_public_ip" "tf_publicip" {
 
 resource "azurerm_network_security_group" "tf_nsg" {
   name                = "nsg-${random_id.keyvault.hex}"
-  location            = "${var.location}"
+  location            = var.location
   resource_group_name = "${azurerm_resource_group.vault.name}"
 
   security_rule {
@@ -143,7 +143,7 @@ resource "azurerm_network_security_group" "tf_nsg" {
 
 resource "azurerm_network_interface" "tf_nic" {
   name                      = "nic-${random_id.keyvault.hex}"
-  location                  = "${var.location}"
+  location                  = var.location
   resource_group_name       = "${azurerm_resource_group.vault.name}"
   network_security_group_id = "${azurerm_network_security_group.tf_nsg.id}"
 
@@ -171,7 +171,7 @@ resource "random_id" "tf_random_id" {
 resource "azurerm_storage_account" "tf_storageaccount" {
   name                     = "sa${random_id.keyvault.hex}"
   resource_group_name      = "${azurerm_resource_group.vault.name}"
-  location                 = "${var.location}"
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
@@ -185,21 +185,21 @@ data "template_file" "setup" {
 
   vars = {
     resource_group_name = "${var.environment}-vault-rg"
-    vm_name             = "${var.vm_name}"
-    vault_download_url  = "${var.vault_download_url}"
-    tenant_id           = "${var.tenant_id}"
-    subscription_id     = "${var.subscription_id}"
-    client_id           = "${var.client_id}"
-    client_secret       = "${var.client_secret}"
+    vm_name             = var.vm_name
+    vault_download_url  = var.vault_download_url
+    tenant_id           = var.tenant_id
+    subscription_id     = var.subscription_id
+    client_id           = var.client_id
+    client_secret       = var.client_secret
     vault_name          = "${azurerm_key_vault.vault.name}"
-    key_name            = "${var.key_name}"
+    key_name            = var.key_name
   }
 }
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "tf_vm" {
-  name                  = "${var.vm_name}"
-  location              = "${var.location}"
+  name                  = var.vm_name
+  location              = var.location
   resource_group_name   = "${azurerm_resource_group.vault.name}"
   network_interface_ids = ["${azurerm_network_interface.tf_nic.id}"]
   vm_size               = "Standard_DS1_v2"
@@ -223,7 +223,7 @@ resource "azurerm_virtual_machine" "tf_vm" {
   }
 
   os_profile {
-    computer_name  = "${var.vm_name}"
+    computer_name  = var.vm_name
     admin_username = "azureuser"
     custom_data    = "${base64encode("${data.template_file.setup.rendered}")}"
   }
@@ -232,7 +232,7 @@ resource "azurerm_virtual_machine" "tf_vm" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = "${var.public_key}"
+      key_data = var.public_key
     }
   }
 
