@@ -1,3 +1,38 @@
+resource "azurerm_resource_group" "vault" {
+  name     = "${var.environment}-vault-rg"
+  location = "${var.location}"
+
+  tags = {
+    environment = "${var.environment}"
+  }
+}
+
+resource "azurerm_virtual_network" "vault" {
+  name                = "acctvn"
+  address_space       = ["10.0.0.0/16"]
+  location            = "${azurerm_resource_group.vault.location}"
+  resource_group_name = "${azurerm_resource_group.vault.name}"
+}
+
+resource "azurerm_subnet" "vault" {
+  name                 = "acctsub"
+  resource_group_name  = "${azurerm_resource_group.vault.name}"
+  virtual_network_name = "${azurerm_virtual_network.vault.name}"
+  address_prefix       = "10.0.2.0/24"
+}
+
+resource "azurerm_public_ip" "vault" {
+  name                = "vault"
+  location            = "${azurerm_resource_group.vault.location}"
+  resource_group_name = "${azurerm_resource_group.vault.name}"
+  allocation_method   = "Static"
+  domain_name_label   = "${azurerm_resource_group.vault.name}"
+
+  tags = {
+    environment = "staging"
+  }
+}
+
 resource "azurerm_lb" "vault" {
   name                = "vault"
   location            = "${azurerm_resource_group.vault.location}"
