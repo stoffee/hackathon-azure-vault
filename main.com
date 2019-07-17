@@ -1,7 +1,4 @@
 
-resource "random_id" "keyvault" {
-  byte_length = 2
-}
 
 data "azurerm_client_config" "current" {
 }
