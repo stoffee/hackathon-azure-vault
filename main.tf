@@ -22,7 +22,7 @@ resource "azurerm_key_vault" "vault" {
   enabled_for_disk_encryption = true
   tenant_id                   = "${var.tenant_id}"
 
-sku_name = "standard"
+  sku_name = "standard"
 
   tags = {
     environment = "${var.environment}"
