@@ -1,4 +1,3 @@
-
 resource "azurerm_virtual_network" "vault" {
   name                = "acctvn"
   address_space       = ["10.0.0.0/16"]
@@ -109,7 +108,7 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
   }
 
   os_profile {
-    computer_name  = "${var.vm_name}"
+    computer_name_prefix  = var.vm_name
     admin_username = "azureuser"
     custom_data    = "${base64encode("${data.template_file.setup.rendered}")}"
   }
@@ -118,7 +117,7 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = "${var.public_key}"
+      key_data = var.public_key
     }
   }
 
@@ -131,7 +130,7 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
       primary                                = true
       subnet_id                              = "${azurerm_subnet.vault.id}"
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool.id}"]
-      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool.*.id, count.index)}"]
+  #    load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool.*.id, count.index)}"]
     }
   }
 
