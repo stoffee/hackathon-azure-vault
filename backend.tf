@@ -4,7 +4,7 @@ terraform {
     organization = "cdunlap"
 
     workspaces {
-      name = "azure-keyvault-unseal"
+      name = "hackathon-azure-vault"
     }
   }
 }
