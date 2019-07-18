@@ -90,7 +90,8 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
     name              = "OsDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
+    managed_disk_type = ""
+    #managed_disk_type = "Premium_LRS"
   }
 
   storage_profile_image_reference {
