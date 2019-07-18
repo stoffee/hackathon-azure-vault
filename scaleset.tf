@@ -68,7 +68,7 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
 
   # automatic rolling upgrade
   automatic_os_upgrade = false
-  upgrade_policy_mode  = "Master"
+  upgrade_policy_mode  = "Manual"
 
 #  rolling_upgrade_policy {
 #    max_batch_instance_percent              = 20
