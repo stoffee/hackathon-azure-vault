@@ -46,10 +46,8 @@ resource "azurerm_lb_nat_pool" "lbnatpool" {
   name                           = "ssh"
   loadbalancer_id                = "${azurerm_lb.vault.id}"
   protocol                       = "Tcp"
-#  frontend_port_start            = 50000
-#  frontend_port_end              = 50119
-  frontend_port_start            = 22
-  frontend_port_end              = 22
+  frontend_port_start            = 50000
+  frontend_port_end              = 50119
   backend_port                   = 22
   frontend_ip_configuration_name = "PublicIPAddress"
 }
@@ -132,7 +130,7 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
       primary                                = true
       subnet_id                              = "${azurerm_subnet.vault.id}"
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.bpepool.id}"]
-  #    load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool.*.id, count.index)}"]
+      load_balancer_inbound_nat_rules_ids    = ["${element(azurerm_lb_nat_pool.lbnatpool.*.id, count.index)}"]
     }
   }
 
