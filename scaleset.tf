@@ -67,18 +67,18 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
   resource_group_name = "${azurerm_resource_group.vault.name}"
 
   # automatic rolling upgrade
-  automatic_os_upgrade = true
-  upgrade_policy_mode  = "Rolling"
+  automatic_os_upgrade = false
+#  upgrade_policy_mode  = "Rolling"
 
-  rolling_upgrade_policy {
-    max_batch_instance_percent              = 20
-    max_unhealthy_instance_percent          = 20
-    max_unhealthy_upgraded_instance_percent = 5
-    pause_time_between_batches              = "PT0S"
-  }
+#  rolling_upgrade_policy {
+#    max_batch_instance_percent              = 20
+#    max_unhealthy_instance_percent          = 20
+#    max_unhealthy_upgraded_instance_percent = 5
+#    pause_time_between_batches              = "PT0S"
+#  }
 
   # required when using rolling upgrade policy
-  health_probe_id = "${azurerm_lb_probe.vault.id}"
+#  health_probe_id = "${azurerm_lb_probe.vault.id}"
 
   sku {
     name     = "Standard_F2"
