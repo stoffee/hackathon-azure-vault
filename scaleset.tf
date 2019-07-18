@@ -97,7 +97,7 @@ resource "azurerm_virtual_machine_scale_set" "vault" {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "16.04.0-LTS"
-    version   = "lavault"
+    version   = "latest"
   }
 
   storage_profile_data_disk {
