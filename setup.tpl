@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt-get install -y unzip jq 
+sudo apt-get install -y unzip jq
 
 VAULT_ZIP="vault.zip"
 VAULT_URL="${vault_download_url}"
@@ -84,4 +84,24 @@ vault write auth/azure/login role="dev-role" \
   vm_name="${vm_name}"
 EOF
 
-sudo chmod +x /tmp/azure_auth.sh
+sudo chmod +x /tmp/pki.sh
+
+sudo cat << EOF > /tmp/azure_auth.sh
+set -v
+export VAULT_ADDR="http://127.0.0.1:8200"
+
+vault secrets enable pki
+
+vault secrets tune -max-lease-ttl=8760h pki
+
+vault write pki/root/generate/internal common_name=website.com ttl=8760h
+
+vault write pki/config/urls issuing_certificates="http://127.0.0.1:8200/v1/pki/ca" crl_distribution_points="http://127.0.0.1:8200/v1/pki/crl"
+
+vault write pki/roles/my-role allowed_domains=website.com allow_subdomains=true max_ttl=72h
+
+vault write pki/issue/my-role common_name=www.website.com
+
+EOF
+
+sudo chmod +x /tmp/pki.sh
