@@ -67,7 +67,7 @@ systemctl enable vault
 systemctl start vault
 
 
-sudo cat << EOF > ~/azure_auth.sh
+sudo cat << EOF > /tmp/azure_auth.sh
 set -v
 export VAULT_ADDR="http://127.0.0.1:8200"
 
@@ -84,9 +84,9 @@ vault write auth/azure/login role="dev-role" \
   vm_name="${vm_name}"
 EOF
 
-sudo chmod +x ~/pki.sh
+sudo chmod +x /tmp/pki.sh
 
-sudo cat << EOF > ~/azure_auth.sh
+sudo cat << EOF > /tmp/azure_auth.sh
 set -v
 export VAULT_ADDR="http://127.0.0.1:8200"
 
@@ -104,4 +104,4 @@ vault write pki/issue/my-role common_name=www.website.com
 
 EOF
 
-sudo chmod +x ~/pki.sh
+sudo chmod +x /tmp/pki.sh
