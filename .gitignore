@@ -18,6 +18,7 @@
 
 # Ignored Terraform files
 *gitignore*.tf
+*backend*.tf
 
 # SSH Keys
 *.pem
@@ -28,4 +29,3 @@
 # Generated private key
 *.key%
 
-backend.tf
