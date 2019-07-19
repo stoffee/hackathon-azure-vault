@@ -84,9 +84,9 @@ vault write auth/azure/login role="dev-role" \
   vm_name="${vm_name}"
 EOF
 
-sudo chmod +x /tmp/pki.sh
+sudo chmod +x /tmp/azure_auth.sh
 
-sudo cat << EOF > /tmp/azure_auth.sh
+sudo cat << EOF > /tmp/pki.sh
 set -v
 export VAULT_ADDR="http://127.0.0.1:8200"
 
